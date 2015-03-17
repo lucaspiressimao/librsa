@@ -3,7 +3,18 @@
 #include <math.h> 
 #include <string.h> 
 
-long int p,q,n,t,flag,e[100],d[100],temp[100],j,m[100],en[100],i; 
+long int p;
+long int q;
+long int n; //modulus
+long int t;
+long int e[100];
+long int d[100];
+long int temp[100];
+long int j;
+long int m[100];
+long int en[100];
+long int i; ;
+
 char msg[100]; 
 
 void        ce(); 
@@ -14,36 +25,39 @@ long int    cd(long int);
 
 void main() 
 { 
-    printf("\nENTER FIRST PRIME NUMBER\n"); 
+    // Receive 2 prime numbers
+    printf("\nEnter first prime number\n"); 
     scanf("%d",&p); 
 
     // Check if it is prime
     if( prime(p) == 0 ) 
     { 
-        printf("\nWRONG INPUT\n"); 
+        printf("\nIs is not prime\n"); 
         exit(1); 
     } 
 
-    printf("\nENTER ANOTHER PRIME NUMBER\n"); 
+    printf("\nEnter second prime number\n"); 
     scanf("%d",&q); 
 
     // Check if it is prime
     if( prime(q) == 0 || p == q ) 
     { 
-        printf("\nWRONG INPUT\n"); 
+        printf("\nIs is not prime or it is equal to number 1\n"); 
         exit(1); 
     } 
 
-    printf("\nENTER MESSAGE\n"); 
+    printf("\nMessage to encrypt and decrypt\n"); 
     fflush(stdin); 
     scanf("%s",msg); 
 
-    // Copy message
+    // Copy message to int
     for( i=0 ; msg[i]!=NULL ; i++ ) 
-        m[i]=msg[i]; 
+        m[i] = msg[i]; 
     
-    n=p*q; 
-    t=(p-1)*(q-1); 
+    // Calculate modulus
+    n = p*q; 
+    t = (p-1) * (q-1); 
+
     ce(); 
 
     printf("\nPOSSIBLE VALUES OF e AND d ARE\n"); 
@@ -78,7 +92,7 @@ void ce()
 
     for( i=2 ; i<t ; i++ ) 
     { 
-        if(t%i==0) 
+        if( (t % i) == 0) 
             continue; 
 
         if( (prime(i) == 1) && (i != p) && (i != q)) 
