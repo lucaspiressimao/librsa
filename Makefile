@@ -1,16 +1,23 @@
 ############################# Makefile ##########################
+
+LIBS := -lm
+COMPILER := gcc
+GEN_LIB := ar rv
+
 # static lib 
 staticlib: 
-	gcc -c rsa_ex.c -o rsa_ex.o
-	ar rv rsa_ex.a rsa_ex.o
-	rm -rf rsa_ex.o
+	$(COMPILER) -c rsa.c -o rsa.o
+	$(GEN_LIB) rsa.a rsa.o
+	rm -rf rsa.o
 
 # Compiled source
-compsrc:
-	gcc rsa_ex.c -o rsa.exec -lm
+compsrc: 
+	$(COMPILER) rsa.c rsa_ex.c -o rsa.exec $(LIBS)
 
 # Clear repo
 clear:
 	rm -rf rsa_ex.o
 	rm -rf rsa_ex.a
-	rm -rf rsa	
+	rm -rf rsa.o
+	rm -rf rsa.exec
+	rm -rf rsa.a

@@ -1,7 +1,6 @@
 #include <stdio.h> 
 #include <stdlib.h> 
-#include <math.h> 
-#include <string.h> 
+#include "rsa.h"
 
 long int p;
 long int q;
@@ -20,7 +19,6 @@ char msg[100];
 void        ce(); 
 void        encrypt(); 
 void        decrypt(); 
-int         prime(long int); 
 long int    cd(long int); 
 
 void main() 
@@ -69,20 +67,7 @@ void main()
     decrypt(); 
 }
 
-// Check if they are prime
-int prime(long int pr) 
-{ 
-    int i; 
 
-    j = sqrt(pr); 
-    
-    for(i=2;i<=j;i++) 
-    { 
-        if(pr%i==0) 
-            return 0; 
-    } 
-    return 1; 
-} 
 
 void ce() 
 { 
