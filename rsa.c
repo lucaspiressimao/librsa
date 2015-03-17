@@ -1,3 +1,5 @@
+#include <math.h>
+#include <string.h>
 // void generate_keys()
 // {
 

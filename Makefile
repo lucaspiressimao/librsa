@@ -3,12 +3,13 @@
 LIBS := -lm
 COMPILER := gcc
 GEN_LIB := ar rv
+DELETE := rm -rf
 
 # static lib 
 staticlib: 
-	$(COMPILER) -c rsa.c -o rsa.o
+	$(COMPILER) -c rsa.c -o rsa.o $(LIBS)
 	$(GEN_LIB) rsa.a rsa.o
-	rm -rf rsa.o
+	$(DELETE) rsa.o
 
 # Compiled source
 compsrc: 
@@ -16,8 +17,8 @@ compsrc:
 
 # Clear repo
 clear:
-	rm -rf rsa_ex.o
-	rm -rf rsa_ex.a
-	rm -rf rsa.o
-	rm -rf rsa.exec
-	rm -rf rsa.a
+	$(DELETE) rsa_ex.o
+	$(DELETE) rsa_ex.a
+	$(DELETE) rsa.o
+	$(DELETE) rsa.exec
+	$(DELETE) rsa.a
