@@ -7,7 +7,7 @@ staticlib:
 
 # Compiled source
 compsrc:
-	gcc rsa_ex.c -o rsa -lm
+	gcc rsa_ex.c -o rsa.exec -lm
 
 # Clear repo
 clear:
