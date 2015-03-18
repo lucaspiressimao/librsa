@@ -1,1 +1,5 @@
 rsa.exec
+rsa_ex.o
+rsa_ex.a
+rsa.o
+rsa.a
