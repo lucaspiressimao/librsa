@@ -2,12 +2,12 @@
 #include <stdlib.h> 
 #include "rsa.h"
 
-long int p;
-long int q;
-long int n; //modulus
-long int t;
-long int e[100];
-long int d[100];
+long int prime_num1;
+long int prime_num2;
+long int modulus;
+long int phi;
+long int public_key_exp[100];
+long int private_key_exp[100];
 long int temp[100];
 long int j;
 long int m[100];
@@ -16,52 +16,55 @@ long int i; ;
 
 char msg[100]; 
 
-void        ce(); 
+void        calc_public_key_exp(); 
 void        encrypt(); 
 void        decrypt(); 
-long int    cd(long int); 
 
 void main() 
 { 
     // Receive 2 prime numbers
     printf("\nEnter first prime number\n"); 
-    scanf("%d",&p); 
+    scanf("%d",&prime_num1); 
 
     // Check if it is prime
-    if( prime(p) == 0 ) 
-    { 
+    if( prime(prime_num1 , &j) == 0 ) 
+    {
         printf("\nIs is not prime\n"); 
         exit(1); 
     } 
 
+    printf("debug j %ld\n", j);
+
     printf("\nEnter second prime number\n"); 
-    scanf("%d",&q); 
+    scanf("%d",&prime_num2); 
 
     // Check if it is prime
-    if( prime(q) == 0 || p == q ) 
+    if( prime(prime_num2 , &j) == 0 || prime_num1 == prime_num2 ) 
     { 
         printf("\nIs is not prime or it is equal to number 1\n"); 
         exit(1); 
     } 
 
+    printf("debug j %ld\n", j);
+
     printf("\nMessage to encrypt and decrypt\n"); 
     fflush(stdin); 
     scanf("%s",msg); 
 
-    // Copy message to int
+    // Convert message to int
     for( i=0 ; msg[i]!=NULL ; i++ ) 
         m[i] = msg[i]; 
     
     // Calculate modulus
-    n = p*q; 
-    t = (p-1) * (q-1); 
+    modulus = prime_num1 * prime_num2;
+    phi = modulus - (prime_num1 + prime_num2 -1);
 
-    ce(); 
+    calc_public_key_exp(); 
 
-    printf("\nPOSSIBLE VALUES OF e AND d ARE\n"); 
+    printf("\nPossible values of key exponent:\n\npublic\tprivate"); 
     
     for( i=0 ; i<j-1 ; i++ ) 
-        printf("\n%ld\t%ld",e[i],d[i]); 
+        printf("\n%ld\t%ld",public_key_exp[i],private_key_exp[i]); 
     
     encrypt(); 
     decrypt(); 
@@ -69,48 +72,41 @@ void main()
 
 
 
-void ce() 
+void calc_public_key_exp() 
 { 
     int k; 
 
     k=0; 
 
-    for( i=2 ; i<t ; i++ ) 
+    for( i=2 ; i < phi ; i++ ) 
     { 
-        if( (t % i) == 0) 
+        // continue if it is even, we need odd
+        if( (phi % i) == 0) 
             continue; 
 
-        if( (prime(i) == 1) && (i != p) && (i != q)) 
+        // check if it is a prime number and diferent from that 2 that we used before
+        if( (prime(i , &j) == 1) && (i != prime_num1) && (i != prime_num2)) 
         { 
-            e[k]=i; 
+            // store the public key
+            public_key_exp[k]=i; 
 
-            if( cd(e[k]) > 0 ) 
+            // calculate the private key for this public key
+            if( calc_private_key_exp(public_key_exp[k], phi) > 0 ) 
             { 
-                d[k] = cd(e[k]); 
+                private_key_exp[k] = calc_private_key_exp(public_key_exp[k], phi); 
                 k++; 
             } 
 
+            // If reach the stack limit
             if(k == 99) 
                 break;
         } 
     } 
 } 
 
-long int cd(long int x) 
-{ 
-    long int k = 1; 
-
-    while(1) 
-    { 
-        k = k+t; 
-        if( (k % x) == 0 ) 
-            return( k / x ); 
-    } 
-} 
-
 void encrypt() 
 { 
-    long int pt,ct,key=e[0],k,len; 
+    long int pt,ct,key=public_key_exp[0],k,len; 
 
     i = 0; 
     len = strlen(msg); 
@@ -124,7 +120,7 @@ void encrypt()
         for( j=0 ; j<key ; j++ ) 
         { 
             k = k * pt;
-            k = k % n; 
+            k = k % modulus; 
         } 
 
         temp[i] = k; 
@@ -143,7 +139,7 @@ void encrypt()
 
 void decrypt() 
 { 
-    long int pt,ct,key = d[0],k; 
+    long int pt,ct,key = private_key_exp[0],k; 
   
     i=0; 
   
@@ -155,7 +151,7 @@ void decrypt()
         for( j=0 ; j<key ; j++ )
         { 
             k = k * ct;
-            k = k % n; 
+            k = k % modulus; 
         }
 
         pt = k + 96; 
