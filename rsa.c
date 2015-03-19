@@ -44,3 +44,36 @@ int prime(long int pr, long int *j)
     } 
     return 1; 
 }
+
+void calc_public_key_exp(long int phi, long int *j, long int prime_num1, long int prime_num2, long int * public_key_exp, long int * private_key_exp) 
+{ 
+    int k; 
+    int i;
+    long int J = *j;
+    k=0; 
+
+    for( i=2 ; i < phi ; i++ ) 
+    { 
+        // continue if it is even, we need odd
+        if( (phi % i) == 0) 
+            continue; 
+
+        // check if it is a prime number and diferent from that 2 that we used before
+        if( (prime(i , &J) == 1) && (i != prime_num1) && (i != prime_num2)) 
+        { 
+            // store the public key
+            public_key_exp[k]=i; 
+
+            // calculate the private key for this public key
+            if( calc_private_key_exp(public_key_exp[k], phi) > 0 ) 
+            { 
+                private_key_exp[k] = calc_private_key_exp(public_key_exp[k], phi); 
+                k++; 
+            } 
+
+            // If reach the stack limit
+            if(k == 99) 
+                break;
+        } 
+    } 
+}

@@ -10,13 +10,13 @@ long int public_key_exp[100];
 long int private_key_exp[100];
 long int temp[100];
 long int j;
-long int m[100];
+long int int_message[100];
 long int en[100];
-long int i; ;
+long int i;
 
 char msg[100]; 
 
-void        calc_public_key_exp(); 
+// void calc_public_key_exp() ;
 void        encrypt(); 
 void        decrypt(); 
 
@@ -53,56 +53,26 @@ void main()
 
     // Convert message to int
     for( i=0 ; msg[i]!=NULL ; i++ ) 
-        m[i] = msg[i]; 
+        int_message[i] = msg[i]; 
     
     // Calculate modulus
     modulus = prime_num1 * prime_num2;
     phi = modulus - (prime_num1 + prime_num2 -1);
 
-    calc_public_key_exp(); 
+    calc_public_key_exp(phi, &j, prime_num1, prime_num2, public_key_exp, private_key_exp); 
+    // calc_public_key_exp(); 
+
+    printf("debug j %ld\n", j);
 
     printf("\nPossible values of key exponent:\n\npublic\tprivate"); 
     
+
     for( i=0 ; i<j-1 ; i++ ) 
         printf("\n%ld\t%ld",public_key_exp[i],private_key_exp[i]); 
     
     encrypt(); 
     decrypt(); 
 }
-
-
-
-void calc_public_key_exp() 
-{ 
-    int k; 
-
-    k=0; 
-
-    for( i=2 ; i < phi ; i++ ) 
-    { 
-        // continue if it is even, we need odd
-        if( (phi % i) == 0) 
-            continue; 
-
-        // check if it is a prime number and diferent from that 2 that we used before
-        if( (prime(i , &j) == 1) && (i != prime_num1) && (i != prime_num2)) 
-        { 
-            // store the public key
-            public_key_exp[k]=i; 
-
-            // calculate the private key for this public key
-            if( calc_private_key_exp(public_key_exp[k], phi) > 0 ) 
-            { 
-                private_key_exp[k] = calc_private_key_exp(public_key_exp[k], phi); 
-                k++; 
-            } 
-
-            // If reach the stack limit
-            if(k == 99) 
-                break;
-        } 
-    } 
-} 
 
 void encrypt() 
 { 
@@ -111,10 +81,14 @@ void encrypt()
     i = 0; 
     len = strlen(msg); 
     
+    // formula to crypt message: c = m^e % mod{n} 
+
     while( i != len ) 
     { 
-        pt = m[i]; 
-        pt = pt-96; 
+        pt = int_message[i]; 
+        printf("\n--->%d\n",pt );
+        // pt = pt-96; 
+        // printf("\n--->%d\n",pt );
         k = 1; 
 
         for( j=0 ; j<key ; j++ ) 
@@ -154,15 +128,50 @@ void decrypt()
             k = k % modulus; 
         }
 
-        pt = k + 96; 
-        m[i] = pt; 
+        // pt = k + 96; 
+        int_message[i] = pt; 
         i++; 
     }
 
-    m[i] = -1; 
+    int_message[i] = -1; 
 
     printf("\nTHE DECRYPTED MESSAGE IS\n"); 
     
-    for(i=0;m[i]!=-1;i++) 
-       printf("%c",m[i]); 
+    for(i=0;int_message[i]!=-1;i++) 
+       printf("%c",int_message[i]);
+
+   printf("\n"); 
 }
+
+// void calc_public_key_exp() 
+// { 
+//     int k; 
+//     int i;
+
+//     k=0; 
+
+//     for( i=2 ; i < phi ; i++ ) 
+//     { 
+//         // continue if it is even, we need odd
+//         if( (phi % i) == 0) 
+//             continue; 
+
+//         // check if it is a prime number and diferent from that 2 that we used before
+//         if( (prime(i , &j) == 1) && (i != prime_num1) && (i != prime_num2)) 
+//         { 
+//             // store the public key
+//             public_key_exp[k]=i; 
+
+//             // calculate the private key for this public key
+//             if( calc_private_key_exp(public_key_exp[k], phi) > 0 ) 
+//             { 
+//                 private_key_exp[k] = calc_private_key_exp(public_key_exp[k], phi); 
+//                 k++; 
+//             } 
+
+//             // If reach the stack limit
+//             if(k == 99) 
+//                 break;
+//         } 
+//     } 
+// }
