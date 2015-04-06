@@ -1,6 +1,6 @@
 #include <stdio.h> 
 #include <stdlib.h> 
-#include "rsa.h"
+#include "src/rsa.h"
 
 long int prime_num1;
 long int prime_num2;
