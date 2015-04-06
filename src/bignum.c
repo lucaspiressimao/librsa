@@ -35,6 +35,38 @@ void int_to_bignum(int s, bignum *n)
 	if (s == 0) n->lastdigit = 0;
 }
 
+void str_to_bignum(char * s, bignum *n)
+{
+	int i;				/* counter */
+	int t = 0;
+	int s_len;
+
+	s_len = strlen(s);
+	n->signbit = PLUS;
+
+	// compare if it is negative
+	if(s[0] == 0x2D)
+	{
+		s_len--;
+		t=1;
+		n->signbit = MINUS;
+	} 
+	
+	for (i=0; i<MAXDIGITS; i++) n->digits[i] = (char) 0;
+
+	n->lastdigit = -1;
+	
+	for(; t < s_len; t++)
+	{
+		n->lastdigit++;
+		if((s[n->lastdigit] < '0') || (s[n->lastdigit] > '9'))return;
+		n->digits[t] = s[n->lastdigit] - '0';
+		// printf("%02X\n", n->digits[t]);
+	}
+
+	if ((s[0] == 0) && (s_len == 1)) n->lastdigit = 0;
+}
+
 void initialize_bignum(bignum *n)
 {
 	int_to_bignum(0,n);
@@ -120,7 +152,7 @@ void subtract_bignum(bignum *a, bignum *b, bignum *c)
 	zero_justify(c);
 }
 
-void compare_bignum(bignum *a, bignum *b)
+int compare_bignum(bignum *a, bignum *b)
 {
 	int i;				/* counter */
 
@@ -226,41 +258,3 @@ void divide_bignum(bignum *a, bignum *b, bignum *c)
 	a->signbit = asign;
 	b->signbit = bsign;
 }
-
-
-
-// main()
-// {
-// 	int a,b;
-// 	bignum n1,n2,n3,zero;
-
-// 	while (scanf("%d %d\n",&a,&b) != EOF) {
-// 		printf("a = %d    b = %d\n",a,b);
-// 		int_to_bignum(a,&n1);
-// 		int_to_bignum(b,&n2);
-
-// 		add_bignum(&n1,&n2,&n3);
-// 		printf("addition -- ");
-// 		print_bignum(&n3);
-
-// 		printf("compare_bignum a ? b = %d\n",compare_bignum(&n1, &n2));
-
-// 		subtract_bignum(&n1,&n2,&n3);
-// 		printf("subtraction -- ");
-// 		print_bignum(&n3);
-
-//                 multiply_bignum(&n1,&n2,&n3);
-// 		printf("multiplication -- ");
-//                 print_bignum(&n3);
-
-// 		int_to_bignum(0,&zero);
-// 		if (compare_bignum(&zero, &n2) == 0)
-// 			printf("division -- NaN \n");
-//                 else {
-// 			divide_bignum(&n1,&n2,&n3);
-// 			printf("division -- ");
-//                 	print_bignum(&n3);
-// 		}
-// 		printf("--------------------------\n");
-// 	}
-// }

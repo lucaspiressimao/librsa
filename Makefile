@@ -4,7 +4,7 @@ LIBS := -lm
 COMPILER := gcc
 GEN_LIB := ar rv
 DELETE := rm -rf
-FILE_LIST := src/rsa.c
+FILE_LIST := src/rsa.c src/bignum.c
 
 # static lib 
 staticlib: 
@@ -13,8 +13,11 @@ staticlib:
 	$(DELETE) out/rsa.o
 
 # Compiled source
-compsrc: 
+compsrcRSA: 
 	$(COMPILER) $(FILE_LIST) rsa_ex.c -o out/rsa.exec $(LIBS)
+
+compsrcBIGNUM: 
+	$(COMPILER) src/bignum.c bignum_ex.c -o out/bignum.exec $(LIBS)
 
 # Clear repo
 clear:
